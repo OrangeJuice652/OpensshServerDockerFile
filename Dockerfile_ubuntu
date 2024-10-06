@@ -1,0 +1,19 @@
+FROM ubuntu:latest
+
+ENV SSH_HOST_USER ssh_user
+ENV SSH_HOST_PASSWORD password
+
+RUN apt update -y && apt install -y openssh-server
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+# -m: create the user's home directory
+RUN useradd -m ${SSH_HOST_USER}
+RUN echo "${SSH_HOST_USER}:${SSH_HOST_PASSWORD}" | chpasswd
+# new login shell for the SSH_HOSR_USER
+RUN usermod -s /bin/bash ${SSH_HOST_USER}
+# ホストキー作成
+RUN ssh-keygen -A
+# /run/ssh作成
+RUN mkdir /run/sshd
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]
