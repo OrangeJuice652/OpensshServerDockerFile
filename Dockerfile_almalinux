@@ -1,0 +1,14 @@
+FROM almalinux:latest
+
+ENV SSH_HOST_USER ssh_user
+ENV SSH_HOST_PASSWORD password
+
+RUN yum update -y && yum install -y openssh-server
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+RUN useradd ${SSH_HOST_USER}
+RUN echo "${SSH_HOST_USER}:${SSH_HOST_PASSWORD}" | chpasswd
+# ホストキー作成
+RUN ssh-keygen -A
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]
