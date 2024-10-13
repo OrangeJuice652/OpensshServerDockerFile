@@ -1,6 +1,6 @@
 FROM almalinux:latest
 
-ENV SSH_HOST_USER ssh_user
+ENV SSH_HOST_USER ssh_server
 ENV SSH_HOST_PASSWORD password
 
 RUN yum update -y && yum install -y openssh-server
